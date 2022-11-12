@@ -14,22 +14,21 @@ struct NewsSourceListScreen: View {
     var body: some View {
         
         NavigationView {
-        
-        List(newsSourceListViewModel.newsSources, id: \.id) { newsSource in
-            NavigationLink(destination: NewsListScreen(newsSource: newsSource)) {
-                NewsSourceCell(newsSource: newsSource)
+            List(newsSourceListViewModel.newsSources, id: \.id) { newsSource in
+                NavigationLink(destination: NewsListScreen(newsSource: newsSource)) {
+                    NewsSourceCell(newsSource: newsSource)
+                }
             }
-        }
-        .listStyle(.plain)
-        .onAppear {
-            newsSourceListViewModel.getSources()
-        }
-        .navigationTitle("News Sources")
-        .navigationBarItems(trailing: Button(action: {
-            // refresh the news
-        }, label: {
-            Image(systemName: "arrow.clockwise.circle")
-        }))
+            .listStyle(.plain)
+            .task {
+                await newsSourceListViewModel.getSources()
+            }
+            .navigationTitle("News Sources")
+            .navigationBarItems(trailing: Button(action: {
+                // refresh the news
+            }, label: {
+                Image(systemName: "arrow.clockwise.circle")
+            }))
         }
     }
 }
@@ -42,7 +41,7 @@ struct NewsSourceListScreen_Previews: PreviewProvider {
 
 struct NewsSourceCell: View {
     
-    let newsSource: NewsSourceViewModel 
+    let newsSource: NewsSourceViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
