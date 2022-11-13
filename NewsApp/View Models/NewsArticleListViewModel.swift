@@ -11,6 +11,17 @@ class NewsArticleListViewModel: ObservableObject {
     
     @Published var newsArticles = [NewsArticleViewModel]()
     
+    @MainActor
+    func getNewsBy(sourceId: String) async {
+        do {
+            let newsArticles = try await Webservice().fetchNews(by: sourceId, url: Constants.Urls.topHeadlines(by: sourceId))
+            self.newsArticles = newsArticles.map(NewsArticleViewModel.init)
+        } catch {
+            print(error)
+        }
+    }
+    
+    /*
     func getNewsBy(sourceId: String) {
         
         Webservice().fetchNews(by: sourceId, url: Constants.Urls.topHeadlines(by: sourceId)) { result in
@@ -24,7 +35,7 @@ class NewsArticleListViewModel: ObservableObject {
             }
         }
     }
-    
+    */
 }
 
 struct NewsArticleViewModel {

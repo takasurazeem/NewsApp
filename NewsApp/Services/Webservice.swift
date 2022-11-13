@@ -49,7 +49,20 @@ class Webservice {
     }
     */
     
-    func fetchNews(by sourceId: String, url: URL?, completion: @escaping (Result<[NewsArticle], NetworkError>) -> Void) {
+    func fetchNews(by sourceId: String, url: URL?) async throws -> [NewsArticle] {
+        return try await withCheckedThrowingContinuation { continuation in
+            fetchNews(by: sourceId, url: url) { result in
+                switch result {
+                case .success(let newsArticles):
+                    continuation.resume(returning: newsArticles)
+                case .failure(let failure):
+                    continuation.resume(throwing: failure)
+                }
+            }
+        }
+    }
+    
+    private func fetchNews(by sourceId: String, url: URL?, completion: @escaping (Result<[NewsArticle], NetworkError>) -> Void) {
         
         guard let url = url else {
             completion(.failure(.badUrl))
