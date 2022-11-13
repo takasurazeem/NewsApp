@@ -11,7 +11,7 @@ struct NewsSourceResponse: Decodable {
     let sources: [NewsSource]
 }
 
-struct NewsSource: Decodable {
+struct NewsSource: Decodable, Identifiable {
     let id: String
     let name: String
     let description: String

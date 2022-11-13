@@ -7,11 +7,11 @@
 
 import Foundation
 
+@MainActor
 class NewsArticleListViewModel: ObservableObject {
     
     @Published var newsArticles = [NewsArticleViewModel]()
     
-    @MainActor
     func getNewsBy(sourceId: String) async {
         do {
             let newsArticles = try await Webservice().fetchNews(by: sourceId, url: Constants.Urls.topHeadlines(by: sourceId))
@@ -20,25 +20,9 @@ class NewsArticleListViewModel: ObservableObject {
             print(error)
         }
     }
-    
-    /*
-    func getNewsBy(sourceId: String) {
-        
-        Webservice().fetchNews(by: sourceId, url: Constants.Urls.topHeadlines(by: sourceId)) { result in
-            switch result {
-                case .success(let newsArticles):
-                    DispatchQueue.main.async {
-                        self.newsArticles = newsArticles.map(NewsArticleViewModel.init)
-                    }
-                case .failure(let error):
-                    print(error)
-            }
-        }
-    }
-    */
 }
 
-struct NewsArticleViewModel {
+struct NewsArticleViewModel: Identifiable {
     
     let id = UUID()
     fileprivate let newsArticle: NewsArticle

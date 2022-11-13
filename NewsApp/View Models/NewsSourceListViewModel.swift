@@ -7,11 +7,11 @@
 
 import Foundation
 
+@MainActor
 class NewsSourceListViewModel: ObservableObject {
     
     @Published var newsSources: [NewsSourceViewModel] = []
     
-    @MainActor
     func getSources() async {
         do {
             let sources = try await Webservice().fetchSources(url: Constants.Urls.sources)
@@ -20,26 +20,9 @@ class NewsSourceListViewModel: ObservableObject {
             print(error)
         }
     }
-    
-    /*
-    func getSources() {
-        
-        Webservice().fetchSources(url: Constants.Urls.sources) { result in
-            switch result {
-                case .success(let newsSources):
-                    DispatchQueue.main.async {
-                        self.newsSources = newsSources.map(NewsSourceViewModel.init)
-                    }
-                case .failure(let error):
-                    print(error)
-            }
-        }
-        
-    }
-    */
 }
 
-struct NewsSourceViewModel {
+struct NewsSourceViewModel: Identifiable {
     
     fileprivate var newsSource: NewsSource
     
